@@ -1,5 +1,9 @@
 @import url(//fonts.googleapis.com/css?family=Open+Sans:400,700);
 
+h2 {
+    font: 20px 'Open Sans';
+}
+
 svg {
   font: 14px 'Open Sans';
 }
@@ -77,4 +81,10 @@ svg {
 
 .marker text {
   text-anchor: middle;
+}
+
+.zeroCrossing {
+    stroke-width: 1;
+    stroke-dashArray: 2;
+    stroke: black;
 }
