@@ -6,7 +6,7 @@ var ISP = {
 };
 
 function toggle() {
-  console.log(this.className);
+  d3.selectAll('.' + d3.select(this).attr('rel')).attr('class', function() { return this.className + ' disabled'; });
 }
 
 function addAxes (svg, xAxis, yAxis, margin, chartWidth, chartHeight) {

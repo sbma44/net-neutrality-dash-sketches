@@ -8,6 +8,10 @@ svg {
   font: 14px 'Open Sans';
 }
 
+.disabled {
+    display: none;
+}
+
 .axis path,
 .axis line {
   fill: none;
