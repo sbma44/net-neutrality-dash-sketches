@@ -7,7 +7,9 @@ medians AS (
 
     FROM "sdk_events"."instrumentile_source_vt"
 
-    WHERE geocodeisp IN
+    WHERE geocodecountrycode='US'
+
+    AND geocodeisp IN
     ('Allied Telecom Group, LLC',
     'AT&T Services, Inc.',
     'Charter Communications',
@@ -48,10 +50,7 @@ isp AS (
     'Qwest Communications Company, LLC',
     'Time Warner Cable Internet LLC')
 
-
     GROUP BY geocodeisp, dt
-
-    HAVING COUNT(timetaken) > 500
 )
 
 SELECT

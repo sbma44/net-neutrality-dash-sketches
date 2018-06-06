@@ -1,3 +1,14 @@
+var ISP = {
+  'charter-communications': 'Charter',
+  'comcast-cable-communications-llc': 'Comcast',
+  'mci-communications-services-inc-dba-verizon-business': 'Verizon Business',
+  'att-services-inc': 'AT&T'
+};
+
+function toggle() {
+  console.log(this.className);
+}
+
 function addAxes (svg, xAxis, yAxis, margin, chartWidth, chartHeight) {
   var axes = svg.append('g');
 
@@ -18,10 +29,12 @@ function addAxes (svg, xAxis, yAxis, margin, chartWidth, chartHeight) {
 }
 
 function drawPaths (svg, data, x, y) {
-  var upperInnerArea = d3.area()
+  var maxEntries = d3.max(data, function (d) { return d3.max(d.values, function(e) { return e.date; })});
+
+  var area = d3.area()
     .x (function (d) { return x(d.date) || 1; })
     .y0(function (d) { return y(d.pct75); })
-    .y1(function (d) { return y(d.pct50); })
+    .y1(function (d) { return y(d.pct25); })
     .curve(d3.curveBasis);
 
   var medianLine = d3.line()
@@ -29,40 +42,62 @@ function drawPaths (svg, data, x, y) {
     .y(function (d) { return y(d.pct50); })
     .curve(d3.curveBasis);
 
-  var lowerInnerArea = d3.area()
-    .x (function (d) { return x(d.date) || 1; })
-    .y0(function (d) { return y(d.pct50); })
-    .y1(function (d) { return y(d.pct25); })
-    .curve(d3.curveBasis);
+  data = data.filter(function(d) { return d.values.length === d3.max(data, function (d) { return d.values.length; }) });
 
-  svg.datum(data);
+  var areaGroup = svg
+    .append('g')
+    .selectAll('g')
+    .data(data)
+    .enter()
+    .append('g')
+    .each(function(d, i, nodes) {
+      var shaded = d3.select(this)
+        .append('path')
+        .datum(d.values)
+        .attr('d', area)
+        .attr('class', 'area upper outer ' + d.values[0].geocodeisp)
+        .attr('clip-path', 'url(#rect-clip)');
+    });
 
-  svg.append('path')
-    .attr('class', 'area upper inner ' + data[0].geocodeisp)
-    .attr('d', upperInnerArea)
-    .attr('clip-path', 'url(#rect-clip)');
+  var lineGroup = svg
+    .append('g')
+    .selectAll('g')
+    .data(data)
+    .enter()
+    .append('g')
+    .each(function(d, i, nodes) {
+      var line = d3.select(this)
+        .append('path')
+        .datum(d.values)
+        .attr('d', medianLine)
+        .attr('class', 'median-line ' + d.values[0].geocodeisp)
+        .attr('clip-path', 'url(#rect-clip)');
+    });
 
-  svg.append('path')
-    .attr('class', 'area lower inner ' + data[0].geocodeisp)
-    .attr('d', lowerInnerArea)
-    .attr('clip-path', 'url(#rect-clip)');
-
-  svg.append('path')
-    .attr('class', 'median-line ' + data[0].geocodeisp)
-    .attr('d', medianLine)
-    .attr('clip-path', 'url(#rect-clip)');
+  var anchor = d3.select('body')
+    .append('div')
+    .attr('class', 'labels')
+    .selectAll('a')
+    .data(data)
+    .enter()
+    .append('a');
+  anchor.append('div').attr('class', 'swatch');
+  anchor.append('span').text(function(d) { return ISP[d.values[0].geocodeisp]; }).attr('class', 'inner-text');
+  anchor.attr('rel', function(d) { return d.values[0].geocodeisp; })
+    .attr('class', function(d) { return 'toggle ' + d.values[0].geocodeisp; })
+    .on('click', toggle);
 
   svg.append("line")
     .attr("x1", 0)
     .attr("y1", y(0))
-    .attr("x2", x(d3.max(data, function (d) { return d.date; })))
+    .attr("x2", x(d3.max(data, function (d) { return d3.max(d.values, function(e) { return e.date; })})))
     .attr("y2", y(0))
     .attr("class", "zeroCrossing");
 }
 
 function makeChart (data) {
-  var svgWidth  = 960,
-      svgHeight = 500,
+  var svgWidth  = window.innerWidth - 50,
+      svgHeight = window.innerHeight - 50,
       margin = { top: 20, right: 40, bottom: 40, left: 40 },
       chartWidth  = svgWidth  - margin.left - margin.right,
       chartHeight = svgHeight - margin.top  - margin.bottom;
@@ -86,8 +121,16 @@ function makeChart (data) {
     .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+  var controls = d3.select('body').append('div')
+    .attr('id', 'controls');
+
+  var nestedData = d3.nest()
+    .key(function (d) { return d.geocodeisp; })
+    .entries(data);
+
+  drawPaths(svg, nestedData, x, y);
+
   addAxes(svg, xAxis, yAxis, margin, chartWidth, chartHeight);
-  drawPaths(svg, data, x, y);
 }
 
 d3.csv('92c20db0-1537-4376-8063-c78efecec1ba.csv', function (d) {
@@ -99,7 +142,4 @@ d3.csv('92c20db0-1537-4376-8063-c78efecec1ba.csv', function (d) {
     geocodeisp: d.geocodeisp.toLowerCase().replace(/[^\sa-z]/g, '').replace(/\s+/g, '-')
   };
 })
-.then(function (data) {
-  data = data.filter(function (d) { return d.geocodeisp.indexOf('comcast') !== -1; })
-  makeChart(data);
-});
+.then(function(data) { makeChart(data); });
