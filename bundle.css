@@ -9,7 +9,7 @@ svg {
 }
 
 .disabled {
-    display: none;
+    visibility: hidden;
 }
 
 .axis path,
@@ -46,56 +46,6 @@ svg {
   fill: none;
   stroke: hsla(240, 100%, 75%, 1);
   stroke-width: 3;
-}
-
-.allied-telecom-group-llc.area {
-  fill: hsla(54, 100%, 95%, 0.5);
-}
-.allied-telecom-group-llc.median-line {
-  stroke: hsla(54, 100%, 75%, 1);
-}
-.allied-telecom-group-llc.toggle .swatch {
-    background-color: hsla(54, 100%, 75%, 1);
-}
-
-.att-services-inc.area {
-  fill: hsla(240, 100%, 95%, 0.5);
-}
-.att-services-inc.median-line {
-  stroke:  hsla(240, 100%, 75%, 1);
-}
-.att-services-inc.toggle .swatch {
-    background-color: hsla(240, 100%, 75%, 1);
-}
-
-.charter-communications.area {
-  fill: hsla(85, 80%, 75%, 0.5);
-}
-.charter-communications.median-line {
-  stroke: hsla(85, 80%, 75%, 1);
-}
-.charter-communications.toggle .swatch {
-    background-color: hsla(85, 80%, 75%, 1);
-}
-
-.comcast-cable-communications-llc.area {
-  fill: hsla(0, 80%, 75%, 0.5);
-}
-.comcast-cable-communications-llc.median-line {
-  stroke: hsla(0, 80%, 75%, 1);
-}
-.comcast-cable-communications-llc.toggle .swatch {
-    background-color: hsla(0, 80%, 75%, 1);
-}
-
-.mci-communications-services-inc-dba-verizon-business.area {
-  fill: hsla(268, 80%, 75%, 0.5);
-}
-.mci-communications-services-inc-dba-verizon-business.median-line {
-  stroke: hsla(268, 80%, 75%, 1);
-}
-.mci-communications-services-inc-dba-verizon-business.toggle .swatch {
-    background-color: hsla(268, 80%, 75%, 1);
 }
 
 .legend .legend-bg {
@@ -157,3 +107,10 @@ svg {
     float: left;
     margin: 5px 10px 5px 5px;
 }
+
+.toggle.off { color: #aaa; }
+.toggle.off .swatch {
+    background-color: #aaa !important;
+}
+
+.highlight { visibility: hidden; }
