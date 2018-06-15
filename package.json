@@ -1,0 +1,24 @@
+{
+  "name": "net-neutrality-dash",
+  "version": "1.0.0",
+  "description": "",
+  "main": "athena.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sbma44/net-neutrality-dash-sketches.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sbma44/net-neutrality-dash-sketches/issues"
+  },
+  "homepage": "https://github.com/sbma44/net-neutrality-dash-sketches#readme",
+  "dependencies": {
+    "aws-sdk": "^2.254.1",
+    "minimist": "^1.2.0",
+    "tape": "^4.9.1"
+  }
+}

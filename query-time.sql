@@ -7,7 +7,11 @@ medians AS (
 
     FROM "sdk_events"."instrumentile_source_vt"
 
-    WHERE geocodecountrycode='US'
+    WHERE dt IN ({{weekSQL}})
+
+    AND geocodecountrycode='US'
+
+    AND timetaken > 0
 
     AND geocodeisp IN
     ('Allied Telecom Group, LLC',
@@ -36,7 +40,11 @@ isp AS (
 
     FROM "sdk_events"."instrumentile_source_vt"
 
-    WHERE geocodecountrycode='US'
+    WHERE dt IN ({{weekSQL}})
+
+    AND geocodecountrycode='US'
+
+    AND timetaken > 0
 
     AND geocodeisp IN
     ('Allied Telecom Group, LLC',
@@ -50,14 +58,14 @@ isp AS (
     'Qwest Communications Company, LLC',
     'Time Warner Cable Internet LLC')
 
-    GROUP BY geocodeisp, dt
+    GROUP BY dt, geocodeisp
 )
 
 SELECT
     isp.dt,
     isp.geocodeisp,
     isp.geocodeasns,
-    isp."count",
+    --isp."count",
     isp.pct_25 - medians.pct_50 AS pct_25_norm,
     isp.pct_50 - medians.pct_50 AS pct_50_norm,
     isp.pct_75 - medians.pct_50 AS pct_75_norm
