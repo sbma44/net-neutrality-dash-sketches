@@ -16,7 +16,6 @@ function toggle(container) {
   var button = d3.select(this);
   var off = button.attr('class').indexOf('off') === -1;
   button.classed('off', off);
-  console.log(button.attr('rel'));
   d3.selectAll(button.attr('rel') + '.graph').style('visibility', off ? 'hidden' : 'visible');
   d3.selectAll(button.attr('rel') + '.graph.highlight').style('visibility', 'hidden');
 }
@@ -204,12 +203,12 @@ function chart(url, container) {
       pct25: parseFloat(d.pct_25_norm),
       pct50: parseFloat(d.pct_50_norm),
       pct75: parseFloat(d.pct_75_norm),
-      geocodeisp: d.geocodeisp.toLowerCase().replace(/[^\sa-z]/g, '').replace(/\s+/g, '-')
+      geocodeisp: d.geocodeisp_norm.toLowerCase().replace(/[^\sa-z]/g, '').replace(/\s+/g, '-')
     };
   })
   .then(function(data) { makeChart(container, data); });
 }
 
-chart('9af9ef92-bcdf-462e-83e7-77d90751a51b.csv', '#load-time');
-chart('507dc811-d800-43c3-be22-4eef8e53b1f3.csv', '#dns');
-chart('693f099d-9048-4ce3-837c-973ca1c24be8.csv', '#tcp');
+chart('https://mapbox-instrumentomaton.s3.amazonaws.com/public/2018-06-10-time.csv', '#load-time');
+chart('https://mapbox-instrumentomaton.s3.amazonaws.com/public/2018-06-10-dns.csv', '#dns');
+chart('https://mapbox-instrumentomaton.s3.amazonaws.com/public/2018-06-10-tcp.csv', '#tcp');
