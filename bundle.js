@@ -196,7 +196,11 @@ function makeChart (container, data) {
   addAxes(svg, xAxis, yAxis, margin, chartWidth, chartHeight);
 }
 
-function chart(url, container) {
+var datasets = {};
+
+function chart(type, date, iteration) {
+  iteration = iteration || 0;
+  var url = 'https://mapbox-instrumentomaton.s3.amazonaws.com/public/' + date.toISOString().split('T')[0] + '-' + type + '.csv';
   d3.csv(url, function (d) {
     return {
       date:  new Date(d.dt),
@@ -206,9 +210,23 @@ function chart(url, container) {
       geocodeisp: d.geocodeisp_norm.toLowerCase().replace(/[^\sa-z]/g, '').replace(/\s+/g, '-')
     };
   })
-  .then(function(data) { makeChart(container, data); });
+  .then(
+    function(data) {
+      datasets[type] = datasets[type] || [];
+      datasets[type] = datasets[type].concat(data);
+      chart(type, new Date(+date - (7 * 24 * 60 * 60 * 1000)), iteration + 1);
+    },
+    function() {
+      datasets[type].sort(function(a, b) { return +a.date - +b.date; });
+      makeChart('#' + type, datasets[type]);
+    });
 }
 
-chart('https://mapbox-instrumentomaton.s3.amazonaws.com/public/2018-06-10-time.csv', '#load-time');
-chart('https://mapbox-instrumentomaton.s3.amazonaws.com/public/2018-06-10-dns.csv', '#dns');
-chart('https://mapbox-instrumentomaton.s3.amazonaws.com/public/2018-06-10-tcp.csv', '#tcp');
+var date = new Date();
+while(date.getDay() > 0) { // back up to Sunday
+  date = new Date(+date - (24 * 60 * 60 * 1000));
+}
+
+chart('time', date);
+chart('dns', date);
+chart('tcp', date);
