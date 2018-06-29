@@ -12,6 +12,11 @@ var ISP = {
 
 window.highlights = {};
 
+function zeroPad(num, places) {
+  var zero = places - num.toString().length + 1;
+  return Array(+(zero > 0 && zero)).join("0") + num;
+}
+
 function toggle(container) {
   var button = d3.select(this);
   var off = button.attr('class').indexOf('off') === -1;
@@ -200,7 +205,7 @@ var datasets = {};
 
 function chart(type, date, iteration) {
   iteration = iteration || 0;
-  var url = 'https://mapbox-instrumentomaton.s3.amazonaws.com/public/' + date.toISOString().split('T')[0] + '-' + type + '.csv';
+  var url = 'https://mapbox-instrumentomaton.s3.amazonaws.com/public/' + date.getFullYear() + '-' + zeroPad(date.getMonth() + 1, 2) + '-' + date.getDate() + '-' + type + '.csv';
   d3.csv(url, function (d) {
     return {
       date:  new Date(d.dt),
