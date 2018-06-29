@@ -222,7 +222,7 @@ function chart(type, date, iteration) {
       chart(type, new Date(+date - (7 * 24 * 60 * 60 * 1000)), iteration + 1);
     },
     function() {
-      datasets[type].sort(function(a, b) { return +a.date - +b.date; });
+      datasets[type].sort(function(a, b) { return (a.geocodeisp === b.geocodeisp) ? +a.date - +b.date : (a.geocodeisp > b.geocodeisp ? 1 : -1) });
       makeChart('#' + type, datasets[type]);
     });
 }
