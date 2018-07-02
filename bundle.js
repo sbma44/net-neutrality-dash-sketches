@@ -205,7 +205,7 @@ var datasets = {};
 
 function chart(type, date, iteration) {
   iteration = iteration || 0;
-  var url = 'https://mapbox-instrumentomaton.s3.amazonaws.com/public/' + date.getFullYear() + '-' + zeroPad(date.getMonth() + 1, 2) + '-' + date.getDate() + '-' + type + '.csv';
+  var url = 'https://mapbox-instrumentomaton.s3.amazonaws.com/public/' + date.getFullYear() + '-' + zeroPad(date.getMonth() + 1, 2) + '-' + zeroPad(date.getDate(), 2) + '-' + type + '.csv';
   d3.csv(url, function (d) {
     return {
       date:  new Date(d.dt),
